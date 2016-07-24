@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">scavenger_hunt</string>
+    <string name="title_activity_external_clue">Find an Extrnal Clue</string>
 </resources>
