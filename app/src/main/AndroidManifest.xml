@@ -14,11 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".qr_scan">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -35,9 +35,14 @@
         <activity
             android:name=".external_clue"
             android:label="@string/title_activity_external_clue">
-            <meta-data
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--<meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.alexhagen.scavenger_hunt.qr_scan" />
+                android:value="io.github.alexhagen.scavenger_hunt.qr_scan" />-->
         </activity>
     </application>
 
