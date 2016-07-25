@@ -2,6 +2,7 @@ package io.github.alexhagen.scavenger_hunt;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,13 +14,16 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class qr_scan extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
-    private ZXingScannerView mScannerView;
+    public ZXingScannerView mScannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan);
-        this.QrScanner(this.mScannerView);
+        View v = findViewById(R.id.qrscanbox);
+        Log.d("EXECUTION", "about to start the qrscanner");
+        this.QrScanner(v);
+        Log.d("EXECUTION", "supposedly started the qrscanner");
     }
 
     public void QrScanner(View view){
@@ -45,10 +49,19 @@ public class qr_scan extends AppCompatActivity implements ZXingScannerView.Resul
         // show the scanner result into dialog box.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Scan Result");
-        builder.setMessage(rawResult.getText());
+        String message = rawResult.getText();
+        builder.setMessage(message);
         AlertDialog alert1 = builder.create();
         alert1.show();
 
+        if (message.equals("external")) {
+            Log.d("EXECUTION", "external clue");
+            Intent mapIntent = new Intent(qr_scan.this, external_clue.class);
+            qr_scan.this.startActivity(mapIntent);
+        } else {
+            Log.d("EXECUTION", "not string external");
+            Log.d("VALUE", message);
+        }
         // If you would like to resume scanning, call this method below:
         // mScannerView.resumeCameraPreview(this);
     }
