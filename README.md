@@ -1,6 +1,6 @@
 # README
 
-- [ ] TODO:  find cartoon for suffocation
+- [x]  find cartoon for suffocation
 - [ ] TODO:  find cartoon for broken bottle
 - [ ] TODO:  find cartoon for hanging
 - [ ] TODO:  find cartoon for poison
