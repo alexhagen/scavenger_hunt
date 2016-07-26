@@ -19,6 +19,14 @@ public class external_clue extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_external_clue);
+
+        // TODO: get current position
+        // TODO: get current heading
+        // TODO: remove any touch callbacks so you cant move map
+        // TODO: measure distance from given coordinates
+        // TODO: measure heading to given coordinates
+        // TODO: plot current position, current heading, heading to given coords, and distance to given coords on map
+
         /*
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -27,5 +35,7 @@ public class external_clue extends FragmentActivity {
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());*/
         Log.d("MAPPING", "hi");
     }
+
+    // TODO: update plot on positionChange
 
 }
