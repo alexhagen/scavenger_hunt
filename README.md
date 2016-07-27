@@ -1,7 +1,7 @@
 # README
 
-- [x]  find cartoon for suffocation
-- [x]  find cartoon for broken bottle
+- [x] find cartoon for suffocation
+- [x] find cartoon for broken bottle
 - [ ] TODO:  find cartoon for hanging
 - [x] find cartoon for poison
 - [x] find cartoon for poison gas
@@ -11,5 +11,5 @@
 - [ ] TODO:  find cartoon for in the top of the closet
 
 - [ ] TODO:  make and print tickets for the Mary Todd Lincoln Play
-- [ ] TODO:  buy st germain
+- [x] buy st germain
 - [ ] TODO:  make and print recipe card
