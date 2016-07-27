@@ -3,7 +3,7 @@
 - [x]  find cartoon for suffocation
 - [x]  find cartoon for broken bottle
 - [ ] TODO:  find cartoon for hanging
-- [ ] TODO:  find cartoon for poison
+- [x] find cartoon for poison
 - [ ] TODO:  find cartoon for poison gas
 
 - [ ] TODO:  find cartoon for under the cabinet
