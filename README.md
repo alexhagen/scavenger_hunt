@@ -4,7 +4,7 @@
 - [x]  find cartoon for broken bottle
 - [ ] TODO:  find cartoon for hanging
 - [x] find cartoon for poison
-- [ ] TODO:  find cartoon for poison gas
+- [x] find cartoon for poison gas
 
 - [ ] TODO:  find cartoon for under the cabinet
 - [ ] TODO:  find cartoon for in the pantry
