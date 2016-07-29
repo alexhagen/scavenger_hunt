@@ -1,5 +1,7 @@
 package io.github.alexhagen.scavenger_hunt;
 
+
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -34,6 +36,16 @@ public class external_clue extends FragmentActivity {
         Location location = service.getLastKnownLocation(provider);
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());*/
         Log.d("MAPPING", "hi");
+        double latitude = 0;
+        double longitude = 0;
+        gps_tracker tracker = new gps_tracker(this);
+        if (!tracker.canGetLocation()) {
+            tracker.showSettingsAlert();
+        } else {
+            latitude = tracker.getLatitude();
+            longitude = tracker.getLongitude();
+        }
+        Log.d("MAPPING", String.format("%f N, %f W", latitude, longitude));
     }
 
     // TODO: update plot on positionChange
