@@ -2,6 +2,10 @@ package io.github.alexhagen.scavenger_hunt;
 
 import android.content.IntentSender;
 import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -25,14 +30,18 @@ public class external_clue extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        SensorEventListener {
 
     private GoogleApiClient mGoogleApiClient;
     public static final String TAG = external_clue.class.getSimpleName();
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
-    GeomagneticField geoField;
+    private GeomagneticField geoField;
+    private float[] mRotationMatrix = new float[16];
+    private SensorManager mSensorManager;
+    private Sensor mRotVectSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +60,8 @@ public class external_clue extends FragmentActivity implements
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)
                 .setFastestInterval(1 * 1000);
+        mSensorManager.registerListener(mSensorManager.getOrientation,
+                SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -105,7 +116,7 @@ public class external_clue extends FragmentActivity implements
     }
 
     private void handleNewLocation(Location location){
-        float heading ;
+        float heading;
         float bearing;
 
         Log.d(TAG, location.toString());
@@ -138,5 +149,23 @@ public class external_clue extends FragmentActivity implements
     private void setUpMap() {
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setZoomGesturesEnabled(false);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+            float[] orientation = new float[3];
+            SensorManager.getOrientation(mRotationMatrix, orientation);
+            float bearing = (float) Math.toDegrees(orientation[0]) + (float) geoField.getDeclination();
+            CameraPosition oldPos = mMap.getCameraPosition();
+            CameraPosition pos = CameraPosition.builder(oldPos).bearing(bearing).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(pos));
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
