@@ -1,11 +1,7 @@
 package io.github.alexhagen.scavenger_hunt;
 
+import android.content.Context;
 import android.content.IntentSender;
-import android.hardware.GeomagneticField;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,18 +26,13 @@ public class external_clue extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
-        SensorEventListener {
+        LocationListener {
 
     private GoogleApiClient mGoogleApiClient;
     public static final String TAG = external_clue.class.getSimpleName();
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
-    private GeomagneticField geoField;
-    private float[] mRotationMatrix = new float[16];
-    private SensorManager mSensorManager;
-    private Sensor mRotVectSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +51,6 @@ public class external_clue extends FragmentActivity implements
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)
                 .setFastestInterval(1 * 1000);
-        mSensorManager.registerListener(mSensorManager.getOrientation,
-                SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -116,7 +105,6 @@ public class external_clue extends FragmentActivity implements
     }
 
     private void handleNewLocation(Location location){
-        float heading;
         float bearing;
 
         Log.d(TAG, location.toString());
@@ -128,16 +116,8 @@ public class external_clue extends FragmentActivity implements
                 .position(latLng)
                 .title("I am here!");
         mMap.addMarker(options);
-        geoField = new GeomagneticField(
-                Double.valueOf(location.getLatitude()).floatValue(),
-                Double.valueOf(location.getLongitude()).floatValue(),
-                Double.valueOf(location.getAltitude()).floatValue(),
-                System.currentTimeMillis()
-        );
 
-        heading = location.getBearing() + geoField.getDeclination();
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
     }
 
 
@@ -151,21 +131,4 @@ public class external_clue extends FragmentActivity implements
         mMap.getUiSettings().setZoomGesturesEnabled(false);
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
-            float[] orientation = new float[3];
-            SensorManager.getOrientation(mRotationMatrix, orientation);
-            float bearing = (float) Math.toDegrees(orientation[0]) + (float) geoField.getDeclination();
-            CameraPosition oldPos = mMap.getCameraPosition();
-            CameraPosition pos = CameraPosition.builder(oldPos).bearing(bearing).build();
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(pos));
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
 }
