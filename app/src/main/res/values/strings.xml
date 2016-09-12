@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">scavenger_hunt</string>
     <string name="title_activity_external_clue">Find an Extrnal Clue</string>
+
+    <string name="title_activity_mix_tape">MixTape</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_inside_clue">InsideClue</string>
 </resources>
