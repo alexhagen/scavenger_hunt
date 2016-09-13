@@ -54,7 +54,7 @@ public class Song {
         AlarmManager mgr = (AlarmManager) p.getSystemService(Context.ALARM_SERVICE);
         Intent notintent = new Intent(p, new_song_alarm.class);
         PendingIntent pi = PendingIntent.getService(p, 0, notintent, 0);
-        mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, available.getTime(), pi);
+        mgr.set(AlarmManager.RTC_WAKEUP, available.getTime(), pi);
     }
 
     public boolean is_available(){

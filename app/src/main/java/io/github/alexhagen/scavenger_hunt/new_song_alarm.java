@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Created by ahagen on 9/13/16.
  */
@@ -14,6 +16,10 @@ public class new_song_alarm extends IntentService {
         super("New Song");
     }
 
+    private final static AtomicInteger c = new AtomicInteger(0);
+    public static int getID() {
+        return c.incrementAndGet();
+    }
     @Override
     protected void onHandleIntent(Intent intent) {
         NotificationCompat.Builder mBuilder =
@@ -32,7 +38,7 @@ public class new_song_alarm extends IntentService {
                 );
         mBuilder.setContentIntent(resultPendingIntent);
         // Sets an ID for the notification
-        int mNotificationId = 001;
+        int mNotificationId = getID();
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

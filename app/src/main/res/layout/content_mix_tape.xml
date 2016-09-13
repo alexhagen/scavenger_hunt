@@ -70,5 +70,4 @@
     </LinearLayout>
     <include layout="@layout/scroll_mix_tape" />
 
-
 </RelativeLayout>

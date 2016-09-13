@@ -29,6 +29,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yalantis.phoenix.PullToRefreshView;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,6 +55,7 @@ public class MixTape extends AppCompatActivity {
     Intent intent;
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
+    PullToRefreshView mPullToRefreshView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,7 @@ public class MixTape extends AppCompatActivity {
         playlist.add(new Song(this, R.raw.peter_gabriel_the_book_of_love, "The Book of Love", "Peter Gabriel", -1, "18:30 9/20/2016")); // Working
         playlist.add(new Song(this, R.raw.lord_huron_ends_of_the_earth, "Ends of the Earth", "Lord Huron", 66, "18:30 9/21/2016",
                      new Clue(40.5068614, -86.84382160000001, "To the ends of the earth, would you follow me?"))); // Working
-        playlist.add(new Song(this, R.raw.the_lumineers_sleep_on_the_floor, "Sleep on the Floor", "Lumineers", 68, "15:20 9/23/2016",
+        playlist.add(new Song(this, R.raw.the_lumineers_sleep_on_the_floor, "Sleep on the Floor", "Lumineers", 68, "18:30 9/23/2016",
                      new Clue(R.drawable.clue_3, "We'll be driving through the state."))); // Working
         available = 0;
         for(int ii=0; ii<playlist.size(); ii++){
@@ -128,9 +131,11 @@ public class MixTape extends AppCompatActivity {
             }
         });
         add_buttons();
-
     }
 
+    public void refresh(){
+        add_buttons();
+    }
 
     public void playSong(int j) {
         mixtapemedia.stop();
