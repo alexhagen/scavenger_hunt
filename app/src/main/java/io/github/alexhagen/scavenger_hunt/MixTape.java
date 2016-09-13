@@ -1,22 +1,37 @@
 package io.github.alexhagen.scavenger_hunt;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,24 +50,48 @@ public class MixTape extends AppCompatActivity {
     boolean is_playing;
     long final_time;
     int available = 10;
+    Intent intent;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mix_tape);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        playlist.add(new Song(R.raw.hozier_work_song, "Work Song", "Hozier", 10, "16:10 9/12/2016", new Clue(R.drawable.clue_1)));
-        playlist.add(new Song(R.raw.the_lumineers_cleopatra, "Cleopatra", "The Lumineers", -1, "16:20 9/13/2016"));
-        playlist.add(new Song(R.raw.lord_huron_she_lit_a_fire, "She Lit a Fire", "Lord Huron", 10, "16:20 9/14/2016"));
-        playlist.add(new Song(R.raw.amber_run_i_found, "I Found", "Amber Run", -1, "16:20 9/15/2016"));
-        playlist.add(new Song(R.raw.the_head_and_the_heart_rivers_and_roads, "Rivers and Roads", "The Head and the Heart", 10, "16:20 9/16/2016"));
-        playlist.add(new Song(R.raw.gregory_alan_isakov_the_stable_song, "Stable Song", "Gregory Alan Isakov", -1, "16:20 9/17/2016"));
-        playlist.add(new Song(R.raw.city_and_colour_the_girl, "The Girl", "City and Colour", -1, "16:20 9/18/2016"));
-        playlist.add(new Song(R.raw.benton_paul_i_only_see_you, "I Only See You", "Benton Paul", -1, "16:20 9/19/2016"));
-        playlist.add(new Song(R.raw.peter_gabriel_the_book_of_love, "The Book of Love", "Peter Gabriel", -1, "17:20 9/20/2016"));
-        playlist.add(new Song(R.raw.lord_huron_ends_of_the_earth, "Ends of the Earth", "Lord Huron", 10, "17:20 9/21/2016"));
-        playlist.add(new Song(R.raw.the_lumineers_sleep_on_the_floor, "Sleep on the Floor", "Lumineers", 10, "17:20 9/22/2016"));
+        /* Zero out the clues
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("CLUES", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("CLUE_1", 0);
+        editor.putInt("CLUE_2", 0);
+        editor.putInt("CLUE_3", 0);
+        editor.putInt("CLUE_4", 0);
+        editor.putInt("CLUE_5", 0);
+        editor.putInt("CLUE_6", 0);
+        editor.commit(); */
+
+        playlist.add(new Song(this, R.raw.hozier_work_song, "Work Song", "Hozier", 46, "18:30 9/12/2016",
+                     new Clue(R.drawable.clue_1, "'Cause my baby's sweet as can be\n" +
+                                                 "She give me toothaches just from kissin' me")));  // Working!
+        playlist.add(new Song(this, R.raw.the_lumineers_cleopatra, "Cleopatra", "The Lumineers", -1, "18:30 9/13/2016")); // Working!
+        playlist.add(new Song(this, R.raw.lord_huron_she_lit_a_fire, "She Lit a Fire", "Lord Huron", 26, "18:30 9/14/2016",
+                     new Clue(R.drawable.clue_2, "I've been walking through the mountains\n" +
+                                                 "I've wandered through the trees\n" +
+                                                 "For her")));  // Working!
+        playlist.add(new Song(this, R.raw.amber_run_i_found, "I Found", "Amber Run", -1, "18:30 9/15/2016"));
+        playlist.add(new Song(this, R.raw.the_head_and_the_heart_rivers_and_roads, "Rivers and Roads", "The Head ...", 185, "19:30 9/16/2016",
+                     new Clue(40.4733713, -86.87091399999997, "Rivers and roads\n" +
+                                                              "Rivers 'til I reach you"))); // Working
+        playlist.add(new Song(this, R.raw.gregory_alan_isakov_the_stable_song, "Stable Song", "Gregory Alan ...", -1, "18:30 9/17/2016")); // Working
+        playlist.add(new Song(this, R.raw.city_and_colour_the_girl, "The Girl", "City and Colour", -1, "18:30 9/18/2016")); // Working
+        playlist.add(new Song(this, R.raw.benton_paul_i_only_see_you, "I Only See You", "Benton Paul", -1, "18:30 9/19/2016")); // Working
+        playlist.add(new Song(this, R.raw.peter_gabriel_the_book_of_love, "The Book of Love", "Peter Gabriel", -1, "18:30 9/20/2016")); // Working
+        playlist.add(new Song(this, R.raw.lord_huron_ends_of_the_earth, "Ends of the Earth", "Lord Huron", 66, "18:30 9/21/2016",
+                     new Clue(40.5068614, -86.84382160000001, "To the ends of the earth, would you follow me?"))); // Working
+        playlist.add(new Song(this, R.raw.the_lumineers_sleep_on_the_floor, "Sleep on the Floor", "Lumineers", 68, "15:20 9/23/2016",
+                     new Clue(R.drawable.clue_3, "We'll be driving through the state."))); // Working
         available = 0;
         for(int ii=0; ii<playlist.size(); ii++){
             if (playlist.get(ii).is_available()) {
@@ -89,22 +128,13 @@ public class MixTape extends AppCompatActivity {
             }
         });
         add_buttons();
-        Button refresh_button = (Button) findViewById(R.id.refresh);
-        refresh_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refresh();
-            }
-        });
+
     }
 
-    public void refresh(){
-        add_buttons();
-    }
 
     public void playSong(int j) {
         mixtapemedia.stop();
-        if (j >= 0 && j <= available) {
+        if (j >= 0 && j < available) {
             i = j;
         } else if (j<0) {
             i = available;
@@ -123,11 +153,11 @@ public class MixTape extends AppCompatActivity {
     }
 
     public void playNext() {
-        playSong(++i);
+        playSong(i+1);
     }
 
     public void playLast() {
-        playSong(--i);
+        playSong(i-1);
     }
 
     public Handler mHandler = new Handler() {
@@ -142,13 +172,19 @@ public class MixTape extends AppCompatActivity {
             Log.d("Clue", String.format("%d, %d", current_time_s, playlist.get(i).clue_time));
             if (current_time_s == playlist.get(i).clue_time) {
                 Log.i("CLUE", "Clue triggered!");
-                Log.i("CLUE", "Clue triggered!");
-                Log.i("CLUE", "Clue triggered!");
-                Log.i("CLUE", "Clue triggered!");
-                Log.i("CLUE", "Clue triggered!");
-                Log.i("CLUE", "Clue triggered!");
-                Log.i("CLUE", "Clue triggered!");
-                playlist.get(i).
+                Bundle extras = new Bundle();
+                if (playlist.get(i).clue.type == 2) {
+                    intent = new Intent(MixTape.this, InsideClue.class);
+                    extras.putInt("CLUE_RES", playlist.get(i).clue.res);
+                } else {
+                    intent = new Intent(MixTape.this, external_clue.class);
+                    extras.putDouble("CLUE_LAT", playlist.get(i).clue.latitude);
+                    extras.putDouble("CLUE_LON", playlist.get(i).clue.longitude);
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                extras.putString("CLUE_TEXT", playlist.get(i).clue.clue_text);
+                intent.putExtras(extras);
+                startActivity(intent);
             }
             if (is_playing) {
                 playbutton.setImageResource(R.drawable.ic_pause);
