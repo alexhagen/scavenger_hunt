@@ -3,6 +3,7 @@ package io.github.alexhagen.scavenger_hunt;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -84,6 +85,7 @@ public class external_clue extends FragmentActivity implements
         Bundle extras = intent.getExtras();
         lat = extras.getDouble("CLUE_LAT");
         lon = extras.getDouble("CLUE_LON");
+        final String clue_name = extras.getString("CLUE_NAME");
         String clue_text = extras.getString("CLUE_TEXT");
         TextView tv = (TextView) findViewById(R.id.external_clue_text);
         tv.setText(clue_text);
@@ -91,6 +93,9 @@ public class external_clue extends FragmentActivity implements
         fb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("CLUES", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(clue_name, 1);
                 external_clue.this.finish();
             }
         });

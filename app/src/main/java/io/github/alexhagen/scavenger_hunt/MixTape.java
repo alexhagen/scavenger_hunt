@@ -28,9 +28,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.yalantis.phoenix.PullToRefreshView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -55,7 +57,6 @@ public class MixTape extends AppCompatActivity {
     Intent intent;
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
-    PullToRefreshView mPullToRefreshView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,37 +65,39 @@ public class MixTape extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        /* Zero out the clues
+        // Zero out the clues
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("CLUES", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("CLUE_1", 0);
-        editor.putInt("CLUE_2", 0);
-        editor.putInt("CLUE_3", 0);
+        editor.putInt("CLUE_1", 1);
+        editor.putInt("CLUE_2", 1);
+        editor.putInt("CLUE_3", 1);
         editor.putInt("CLUE_4", 0);
         editor.putInt("CLUE_5", 0);
         editor.putInt("CLUE_6", 0);
-        editor.commit(); */
+        editor.commit();
 
         playlist.add(new Song(this, R.raw.hozier_work_song, "Work Song", "Hozier", 46, "18:30 9/12/2016",
-                     new Clue(R.drawable.clue_1, "'Cause my baby's sweet as can be\n" +
+                     new Clue("CLUE_1", R.drawable.clue_1, "'Cause my baby's sweet as can be\n" +
                                                  "She give me toothaches just from kissin' me")));  // Working!
         playlist.add(new Song(this, R.raw.the_lumineers_cleopatra, "Cleopatra", "The Lumineers", -1, "18:30 9/13/2016")); // Working!
         playlist.add(new Song(this, R.raw.lord_huron_she_lit_a_fire, "She Lit a Fire", "Lord Huron", 26, "18:30 9/14/2016",
-                     new Clue(R.drawable.clue_2, "I've been walking through the mountains\n" +
+                     new Clue("CLUE_2", R.drawable.clue_2, "I've been walking through the mountains\n" +
                                                  "I've wandered through the trees\n" +
                                                  "For her")));  // Working!
         playlist.add(new Song(this, R.raw.amber_run_i_found, "I Found", "Amber Run", -1, "18:30 9/15/2016"));
         playlist.add(new Song(this, R.raw.the_head_and_the_heart_rivers_and_roads, "Rivers and Roads", "The Head ...", 185, "19:30 9/16/2016",
-                     new Clue(40.4733713, -86.87091399999997, "Rivers and roads\n" +
+                     new Clue("CLUE_3", 40.4733713, -86.87091399999997, "Rivers and roads\n" +
                                                               "Rivers 'til I reach you"))); // Working
         playlist.add(new Song(this, R.raw.gregory_alan_isakov_the_stable_song, "Stable Song", "Gregory Alan ...", -1, "18:30 9/17/2016")); // Working
         playlist.add(new Song(this, R.raw.city_and_colour_the_girl, "The Girl", "City and Colour", -1, "18:30 9/18/2016")); // Working
-        playlist.add(new Song(this, R.raw.benton_paul_i_only_see_you, "I Only See You", "Benton Paul", -1, "18:30 9/19/2016")); // Working
+        playlist.add(new Song(this, R.raw.benton_paul_i_only_see_you, "I Only See You", "Benton Paul", 61, "18:30 9/19/2016",
+                     new Clue("CLUE_4", R.drawable.clue_4, "I only see you,\n" +
+                                                           "In all that I do."))); // Working
         playlist.add(new Song(this, R.raw.peter_gabriel_the_book_of_love, "The Book of Love", "Peter Gabriel", -1, "18:30 9/20/2016")); // Working
-        playlist.add(new Song(this, R.raw.lord_huron_ends_of_the_earth, "Ends of the Earth", "Lord Huron", 66, "18:30 9/21/2016",
-                     new Clue(40.5068614, -86.84382160000001, "To the ends of the earth, would you follow me?"))); // Working
-        playlist.add(new Song(this, R.raw.the_lumineers_sleep_on_the_floor, "Sleep on the Floor", "Lumineers", 68, "18:30 9/23/2016",
-                     new Clue(R.drawable.clue_3, "We'll be driving through the state."))); // Working
+        playlist.add(new Song(this, R.raw.lord_huron_ends_of_the_earth, "Ends of the Earth", "Lord Huron", 66, "19:00 9/21/2016",
+                     new Clue("CLUE_5", 40.5068614, -86.84382160000001, "To the ends of the earth, would you follow me?"))); // Working
+        playlist.add(new Song(this, R.raw.the_lumineers_sleep_on_the_floor, "Sleep on the Floor", "Lumineers", 68, "18:30 9/22/2016",
+                     new Clue("CLUE_6", R.drawable.clue_3, "We'll be driving through the state."))); // Working
         available = 0;
         for(int ii=0; ii<playlist.size(); ii++){
             if (playlist.get(ii).is_available()) {
@@ -175,7 +178,7 @@ public class MixTape extends AppCompatActivity {
             songtimetv.setText(String.format("%d:%02d / %d:%02d", current_min, current_s, total_min, total_s)); //this is the textview
             int current_time_s = (int) current_time / 1000;
             Log.d("Clue", String.format("%d, %d", current_time_s, playlist.get(i).clue_time));
-            if (current_time_s == playlist.get(i).clue_time) {
+            if (current_time_s == playlist.get(i).clue_time && playlist.get(i).is_unsolved()) {
                 Log.i("CLUE", "Clue triggered!");
                 Bundle extras = new Bundle();
                 if (playlist.get(i).clue.type == 2) {
@@ -188,6 +191,7 @@ public class MixTape extends AppCompatActivity {
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 extras.putString("CLUE_TEXT", playlist.get(i).clue.clue_text);
+                extras.putString("CLUE_NAME", playlist.get(i).clue.clue_name);
                 intent.putExtras(extras);
                 startActivity(intent);
             }
@@ -217,7 +221,16 @@ public class MixTape extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(playlist.get(j).is_available()) {
+                    refresh();
                     playSong(j);
+                } else {
+                    refresh();
+                    Context context = getApplicationContext();
+                    CharSequence text = "Checking for new songs!";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
                 }
             }
         });
@@ -232,8 +245,23 @@ public class MixTape extends AppCompatActivity {
         }
         if (playlist.get(j).is_available()) {
             textView.setText(String.format("%s\n%s", playlist.get(j).artist_name, playlist.get(j).song_name));
+            textView.setTextSize(18);
+            textView.setTextColor(getResources().getColor(R.color.tan));
+            ib.setImageResource(R.drawable.ic_music_video);
         } else {
-            textView.setText("...");
+            Date available = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm MM/dd/yyyy");
+            //formatter.setTimeZone(TimeZone.getTimeZone("Indianapolis"));
+            try {
+                available = formatter.parse(playlist.get(j).song_available);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            SimpleDateFormat printformatter = new SimpleDateFormat("E, MM/dd\nh:mm a");
+            textView.setText(printformatter.format(available));
+            textView.setTextSize(14);
+            textView.setTextColor(getResources().getColor(R.color.greylight));
+            ib.setImageResource(R.drawable.mixtape_plain_grey);
         }
     }
 

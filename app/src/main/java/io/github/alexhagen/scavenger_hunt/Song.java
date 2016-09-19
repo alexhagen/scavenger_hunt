@@ -5,8 +5,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,8 +33,8 @@ public class Song {
     }
 
     Song(Activity p, int res, java.lang.String sn, java.lang.String an, int ct, java.lang.String ad, Clue c){
-        init(p, res, sn, an, ct, ad);
         clue = c;
+        init(p, res, sn, an, ct, ad);
     }
 
     public void init(Activity p, int res, java.lang.String sn, java.lang.String an, int ct, java.lang.String ad){
@@ -71,5 +73,17 @@ public class Song {
         Log.d("DATE", formatter.format(available));
         Log.d("DATE", String.format("available: %d", available.compareTo(now)));
         return available.compareTo(now) <= 0;
+    }
+
+    public boolean is_unsolved(){
+        Log.d("UNSOLVED", "Trying to figure out if its unsolved.");
+        if (clue != null) {
+            SharedPreferences sharedPref = parent.getApplicationContext().getSharedPreferences("CLUES", Context.MODE_PRIVATE);
+            int unsolved = sharedPref.getInt(clue.clue_name, 0);
+            Log.d("UNSOLVED", String.format("%s is unsolved: %d", clue.clue_name, unsolved));
+            return unsolved == 0;
+        } else {
+            return true;
+        }
     }
 }

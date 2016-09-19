@@ -1,6 +1,8 @@
 package io.github.alexhagen.scavenger_hunt;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,10 +28,14 @@ public class InsideClue extends AppCompatActivity {
         ci.setImageResource(res);
         TextView ct = (TextView) findViewById(R.id.clue_text);
         ct.setText(clue_text);
+        final String clue_name = extras.getString("CLUE_NAME");
         Button fb = (Button) findViewById(R.id.finished_inside_clue);
         fb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("CLUES", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(clue_name, 1);
                 InsideClue.this.finish();
             }
         });

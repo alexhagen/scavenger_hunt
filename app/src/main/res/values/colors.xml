@@ -8,5 +8,6 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="tan">#916F6F</color>
     <color name="tanlight">#C8B7B7</color>
+    <color name="greylight">#D1D3D4</color>
 
 </resources>
