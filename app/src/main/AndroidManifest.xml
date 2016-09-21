@@ -27,9 +27,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity android:name=".qr_scan" />
-        <service android:name=".new_song_alarm" ></service>
+
+        <service android:name=".new_song_alarm" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -62,7 +63,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InsideClue"></activity>
+        <activity android:name=".InsideClue" />
+        <activity
+            android:name=".ResetClues"
+            android:label="@string/title_activity_reset_clues"
+            android:parentActivityName=".MixTape"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.github.alexhagen.scavenger_hunt.MixTape" />
+        </activity>
     </application>
 
 </manifest>

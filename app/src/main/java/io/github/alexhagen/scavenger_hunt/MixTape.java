@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,17 +17,22 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,11 +63,13 @@ public class MixTape extends AppCompatActivity {
     Intent intent;
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
+    private ListView mDrawerList;
+    private ArrayAdapter<String> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mix_tape);
+        setContentView(R.layout.activity_reset_clues);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +82,10 @@ public class MixTape extends AppCompatActivity {
         editor.putInt("CLUE_4", 0);
         editor.putInt("CLUE_5", 0);
         editor.putInt("CLUE_6", 0);
+        editor.putInt("CLUE_7", 0);
         editor.commit();
+
+        //MenuItem clue_button = (MenuItem) findViewById(R.layout.mon13reset);
 
         playlist.add(new Song(this, R.raw.hozier_work_song, "Work Song", "Hozier", 46, "18:30 9/12/2016",
                      new Clue("CLUE_1", R.drawable.clue_1, "'Cause my baby's sweet as can be\n" +
@@ -94,8 +105,10 @@ public class MixTape extends AppCompatActivity {
                      new Clue("CLUE_4", R.drawable.clue_4, "I only see you,\n" +
                                                            "In all that I do."))); // Working
         playlist.add(new Song(this, R.raw.peter_gabriel_the_book_of_love, "The Book of Love", "Peter Gabriel", -1, "18:30 9/20/2016")); // Working
+        playlist.add(new Song(this, R.raw.death_cab_for_cutie_the_new_year, "The New Year", "Death Cab", 132, "18:30 9/21/2016",
+                     new Clue("CLUE_7", R.drawable.clue_7, "So everybody put your best suit or dress on.")));
         playlist.add(new Song(this, R.raw.lord_huron_ends_of_the_earth, "Ends of the Earth", "Lord Huron", 66, "19:00 9/21/2016",
-                     new Clue("CLUE_5", 40.5068614, -86.84382160000001, "To the ends of the earth, would you follow me?"))); // Working
+                     new Clue("CLUE_5", 40.50553333333333, -86.84603333333334, "To the ends of the earth, \nwould you follow me?"))); // Working
         playlist.add(new Song(this, R.raw.the_lumineers_sleep_on_the_floor, "Sleep on the Floor", "Lumineers", 68, "18:30 9/22/2016",
                      new Clue("CLUE_6", R.drawable.clue_3, "We'll be driving through the state."))); // Working
         available = 0;
@@ -275,8 +288,9 @@ public class MixTape extends AppCompatActivity {
         set_button(R.id.tgcac, 6);
         set_button(R.id.iosybp, 7);
         set_button(R.id.bolpg, 8);
-        set_button(R.id.eotelh, 9);
-        set_button(R.id.sotfl, 10);
+        set_button(R.id.tnydcfc, 9);
+        set_button(R.id.eotelh, 10);
+        set_button(R.id.sotfl, 11);
 
     }
 }

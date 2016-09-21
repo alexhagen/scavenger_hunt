@@ -197,6 +197,26 @@
                 android:src="@drawable/ic_music_video"
                 android:tint="@color/tanlight"
                 android:background="@color/transparent"
+                android:id="@+id/tnydcfc"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:text="The New Year\nDeath Cab"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/tan"
+                android:gravity="center"/>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp">
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_music_video"
+                android:tint="@color/tanlight"
+                android:background="@color/transparent"
                 android:id="@+id/eotelh"/>
             <TextView
                 android:layout_width="match_parent"
